@@ -27,6 +27,7 @@ interface Settings {
   livekitApiSecret: string;
   livekitAgentId: string;
   callerId: string;
+  livekitSipTrunkId: string;
   maxConcurrentCalls: number;
   maxAttemptsPerDay: number;
   callWindowStart: string;
@@ -82,6 +83,7 @@ async function loadSettings(): Promise<Settings> {
     ["LIVEKIT_API_SECRET", e.LIVEKIT_API_SECRET],
     ["LIVEKIT_AGENT_ID", e.LIVEKIT_AGENT_ID],
     ["CALLER_ID", e.CALLER_ID],
+    ["LIVEKIT_SIP_TRUNK_ID", e.LIVEKIT_SIP_TRUNK_ID],
     ["KV_REST_API_URL", e.KV_REST_API_URL],
     ["KV_REST_API_TOKEN", e.KV_REST_API_TOKEN],
   ];
@@ -110,6 +112,7 @@ async function loadSettings(): Promise<Settings> {
     livekitApiSecret: e.LIVEKIT_API_SECRET!,
     livekitAgentId: e.LIVEKIT_AGENT_ID!,
     callerId: e.CALLER_ID!,
+    livekitSipTrunkId: e.LIVEKIT_SIP_TRUNK_ID!,
     maxConcurrentCalls: Number(e.MAX_CONCURRENT_CALLS ?? 1),
     maxAttemptsPerDay: Number(e.MAX_ATTEMPTS_PER_DAY ?? 3),
     callWindowStart: e.CALL_WINDOW_START ?? "09:00",
@@ -127,13 +130,13 @@ async function loadSettings(): Promise<Settings> {
 const CLOSE_BASE = "https://api.close.com/api/v1";
 
 const CF = {
-  callStatus: "custom.cf_call_status",
-  callAttempts: "custom.cf_call_attempts",
-  holdUntil: "custom.cf_hold_until",
-  doNotCall: "custom.cf_do_not_call",
-  claimId: "custom.cf_claim_id",
-  livekitRoom: "custom.cf_livekit_room",
-  callOutcome: "custom.cf_call_outcome",
+  callStatus: "custom.cf_GkNJVjPR8YqqtY6mfczlNY1wCs5HCd67zKPasvrLWJC",
+  callAttempts: "custom.cf_5ly0XyY6KTQVMhJ2VoOr4NdLKg8LYIkHxJfpYqIkIRK",
+  holdUntil: "custom.cf_HRqwuBTpHpahqXKyGuytONtYSwkeU6Ex4NpS0KvxJRG",
+  doNotCall: "custom.cf_uwSCAf27qRepDuZFQCsfbn1lrkPDUpGwj3Luhivfdgg",
+  claimId: "custom.cf_tPYcbIjCMcIL7kmYfX6vYZuEmzY54RE7z7TJ8QpXr5u",
+  livekitRoom: "custom.cf_fCVlSTD8dZWCnq5rTKZwhGyFAj70IDluIfte9CKxF9D",
+  callOutcome: "custom.cf_enDvA0i75jH1MBZVrzM7kwgzAu0V9dFQ6M806QwTKDI",
 } as const;
 
 function closeHeaders(apiKey: string): Record<string, string> {
@@ -154,7 +157,7 @@ function normalizeLead(raw: any): Lead {
     callStatus: raw[CF.callStatus] ?? null,
     callAttempts: Number(raw[CF.callAttempts] ?? 0),
     holdUntil: raw[CF.holdUntil] ?? null,
-    doNotCall: raw[CF.doNotCall] === true,
+    doNotCall: raw[CF.doNotCall] === "yes",
     claimId: raw[CF.claimId] ?? null,
     livekitRoom: raw[CF.livekitRoom] ?? null,
     callOutcome: raw[CF.callOutcome] ?? null,
@@ -439,6 +442,7 @@ async function livekitCallPhone(
     { roomAdmin: true, room: roomName },
     {
       room_name: roomName,
+      sip_trunk_id: s.livekitSipTrunkId,
       sip_trunk_phone_number: s.callerId,
       sip_call_to: phone,
       participant_identity: `lead-${phone}`,
@@ -793,7 +797,7 @@ export async function energyCallResult(input: {
   };
 
   if (input.do_not_call === true) {
-    updates[CF.doNotCall] = true;
+    updates[CF.doNotCall] = "yes";
     updates[CF.callStatus] = "dnc_skip";
   } else {
     switch (input.outcome) {

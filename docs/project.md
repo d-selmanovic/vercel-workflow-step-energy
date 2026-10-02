@@ -158,19 +158,19 @@ Die 5 n8n-Workflows waren technisch bedingt (n8n kann keine langlaufenden Prozes
 | `stat_T6QxVI9SM8vGDF5a0oLfAnk9XCTYO58SXDYzpXVhGLB` | Canceled | Lead storniert |
 | `stat_SVwWkhogOehK0Y7USRcTJzOlr2o4YqgynkQ41QAXqxw` | Not Interested | Lead lehnt ab |
 
-### Custom Fields (angelegt am 2026-10-02)
+### Custom Fields (angelegt am 2026-10-02, via REST API verifiziert)
 
-| Feldname | Type | Werte / Zweck | Status |
+| Feldname | Field-ID | Type | Werte / Zweck |
 |---|---|---|---|
-| `call_status` | choices | `ready` / `dialing` / `active` / `retry` / `hold` / `ended` / `dnc_skip` | ✅ Angelegt |
-| `call_attempts` | number | Anzahl Anrufversuche heute | ✅ Angelegt |
-| `hold_until` | datetime | Wartezeit bis zum nächsten Versuch | ✅ Angelegt |
-| `do_not_call` | boolean | Nicht mehr anrufen | ✅ Angelegt |
-| `claim_id` | text | Dispatcher-Lauf der den Lead reserviert hat | ✅ Angelegt |
-| `livekit_room` | text | Raumname für Zuordnung | ✅ Angelegt |
-| `call_outcome` | text | Letztes Ergebnis (termin/interessiert/abgelehnt/mailbox/keine_antwort) | ✅ Angelegt |
+| `call_status` | `cf_GkNJVjPR8YqqtY6mfczlNY1wCs5HCd67zKPasvrLWJC` | choices | `ready` / `dialing` / `active` / `retry` / `hold` / `ended` / `dnc_skip` / `needs_review` |
+| `call_attempts` | `cf_5ly0XyY6KTQVMhJ2VoOr4NdLKg8LYIkHxJfpYqIkIRK` | number | Anzahl Anrufversuche heute |
+| `hold_until` | `cf_HRqwuBTpHpahqXKyGuytONtYSwkeU6Ex4NpS0KvxJRG` | datetime | Wartezeit bis zum nächsten Versuch |
+| `do_not_call` | `cf_uwSCAf27qRepDuZFQCsfbn1lrkPDUpGwj3Luhivfdgg` | choices (`yes`) | Nicht mehr anrufen (REST-API hat keinen boolean-Typ) |
+| `claim_id` | `cf_tPYcbIjCMcIL7kmYfX6vYZuEmzY54RE7z7TJ8QpXr5u` | text | Dispatcher-Lauf der den Lead reserviert hat |
+| `livekit_room` | `cf_fCVlSTD8dZWCnq5rTKZwhGyFAj70IDluIfte9CKxF9D` | text | Raumname für Zuordnung |
+| `call_outcome` | `cf_enDvA0i75jH1MBZVrzM7kwgzAu0V9dFQ6M806QwTKDI` | text | Letztes Ergebnis (termin/interessiert/abgelehnt/mailbox/keine_antwort) |
 
-> Die genauen Close-Field-IDs werden beim Workflow-Bau benötigt und dann hier ergänzt.
+> Die IDs stehen im `CF`-Objekt in `workflows/energy.ts` und müssen bei Neu-Anlage synchron gehalten werden.
 
 ---
 
