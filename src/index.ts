@@ -65,7 +65,8 @@ app.post(
   "/webhooks/livekit",
   express.raw({ type: "*/*" }),
   async (req, res) => {
-    const secret = process.env.LIVEKIT_WEBHOOK_SECRET;
+    const secret =
+      process.env.LIVEKIT_WEBHOOK_SECRET ?? process.env.LIVEKIT_API_SECRET;
     const auth = req.headers.authorization;
     if (!secret || !auth?.startsWith("Bearer ")) {
       return res.status(401).json({ error: "Unauthorized" });
